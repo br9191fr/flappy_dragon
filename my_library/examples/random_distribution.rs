@@ -1,5 +1,5 @@
 //! Roll 3d6 repeatedly and graph the resulting distribution.
-use my_library_docs::RandomNumberGenerator;
+use my_library::RandomNumberGenerator;
 
 fn main() {
   // Create a random number generator
