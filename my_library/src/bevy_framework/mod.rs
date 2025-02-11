@@ -22,7 +22,6 @@ where
 {
     fn build(&self, app: &mut App) {
         app.add_state::<T>();
-        //app.add_plugins(bevy_egui::EguiPlugin);
         app.add_systems(Startup, setup_menus);//(3)
         let start = MenuResource {
             menu_state: self.menu_state,
