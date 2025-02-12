@@ -9,6 +9,7 @@ rand_pcg = { workspace = true, optional = true }
 rand_xorshift = { workspace = true, optional = true }
 bevy  = { workspace = true }
 anyhow = "1"
+bevy_egui = "0.23"
 
 [features]
 default = [ "pcg" ]

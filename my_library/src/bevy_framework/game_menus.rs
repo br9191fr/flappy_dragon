@@ -1,5 +1,6 @@
-use super::{MenuAssets, MenuResource};
+use super::MenuResource;
 use bevy::{app::AppExit, prelude::*};
+use crate::{AssetStore};
 
 #[derive(Component)]
 pub(crate) struct MenuElement;
@@ -7,17 +8,18 @@ pub(crate) struct MenuElement;
 pub(crate) fn setup<T>(// (1)
                        state: Res<State<T>>,
                        mut commands: Commands,
-                       menu_assets: Res<MenuAssets>,
                        menu_resource: Res<MenuResource<T>>,
+                       loaded_assets: crate::AssetResource,
+                       assets: Res<AssetStore>,
 ) where
     T: States,
 {
     let current_state = state.get();// (2)
     let menu_graphic = match current_state {// (3)
         current_state if menu_resource.menu_state == *current_state =>
-            menu_assets.main_menu.clone(),
+            assets.get_handle("main_menu", &loaded_assets).unwrap(),
         current_state if menu_resource.game_end_state == *current_state =>
-            menu_assets.game_over.clone(),
+            assets.get_handle("game_over", &loaded_assets).unwrap(),
         _ => panic!("Unknown menu state"),// (4)
     };
 

@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use crate::bevy_framework;
+
 mod game_menus;
 
 pub struct GameStatePlugin<T> {
@@ -22,40 +24,31 @@ where
 {
     fn build(&self, app: &mut App) {
         app.add_state::<T>();
-        app.add_systems(Startup, setup_menus);//(3)
+        app.add_plugins(bevy_egui::EguiPlugin  );
         let start = MenuResource {
             menu_state: self.menu_state,
             game_start_state: self.game_start_state,//(4)
             game_end_state: self.game_end_state,
         };
         app.insert_resource(start);
-
         app.add_systems(OnEnter(self.menu_state), game_menus::setup::<T>);
         app.add_systems(Update, game_menus::run::<T>
-            .run_if(in_state(self.menu_state)));
+            .run_if(in_state(
+                self.menu_state)));
         app.add_systems(OnExit(self.menu_state),
-                        cleanup::<game_menus::MenuElement>);//(5)
-
+                        cleanup::<game_menus::MenuElement>);
         app.add_systems(OnEnter(self.game_end_state), game_menus::setup::<T>);
         app.add_systems(Update, game_menus::run::<T>
             .run_if(in_state(self.game_end_state)));
         app.add_systems(OnExit(self.game_end_state),
                         cleanup::<game_menus::MenuElement>);
+        app.add_systems(OnEnter(T::default()), crate::bevy_assets::setup);
+        app.add_systems(Update, crate::bevy_assets::run::<T>
+            .run_if(in_state(T::default())));
+        app.add_systems(OnExit(T::default()), crate::bevy_assets::exit);
     }
 }
-#[derive(Resource)]
-pub(crate) struct MenuAssets {
-    pub(crate) main_menu: Handle<Image>,
-    pub(crate) game_over: Handle<Image>,
-}
 
-fn setup_menus(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let assets = MenuAssets {
-        main_menu: asset_server.load("main_menu.png"),
-        game_over: asset_server.load("game_over.png"),
-    };
-    commands.insert_resource(assets);
-}
 #[derive(Resource)]
 pub(crate) struct MenuResource<T> {
     pub(crate) menu_state: T,

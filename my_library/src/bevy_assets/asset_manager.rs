@@ -13,7 +13,12 @@ pub struct AssetManager {
 impl AssetManager {
     pub fn new() -> Self {
         Self {
-            asset_list: Vec::new(),
+            asset_list: vec![
+                ("main_menu".to_string(), "main_menu.png".to_string(),
+                AssetType::Image),
+                ("game_over".to_string(), "game_over.png".to_string(),
+                AssetType::Image),
+            ],
         }
     }
 
@@ -26,7 +31,7 @@ impl AssetManager {
         #[cfg(not(target_arch = "wasm32"))]//(6)
         {
             let current_directory = std::env::current_dir()?;//(7)
-            println!("dir = {}",current_directory.to_str().unwrap());
+            //println!("dir = {}",current_directory.to_str().unwrap());
             let assets = current_directory.join("assets");//(8)
             let new_image = assets.join(&filename);
             if !new_image.exists() {
