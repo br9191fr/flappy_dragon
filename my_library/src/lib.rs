@@ -39,3 +39,10 @@ pub mod rand {
 }
 mod bevy_framework;
 pub use bevy_framework::*;
+
+mod bevy_assets;
+pub use bevy_assets::*;
+
+pub mod anyhow {
+    pub use anyhow::*;
+}
