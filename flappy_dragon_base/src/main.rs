@@ -12,7 +12,6 @@ struct Obstacle;
 #[derive(Component)]
 struct FlappyElement;
 
-
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash, Default, States)]
 enum GamePhase {
   #[default] Loading,
@@ -51,6 +50,7 @@ fn main() -> anyhow::Result<()> {
           .add_image("wall", "wall.png")?
       )
       .run();
+  
   Ok(())
 }
 
