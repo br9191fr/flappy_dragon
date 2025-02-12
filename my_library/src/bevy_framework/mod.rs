@@ -1,6 +1,4 @@
 use bevy::prelude::*;
-use crate::bevy_framework;
-
 mod game_menus;
 
 pub struct GameStatePlugin<T> {
@@ -18,6 +16,7 @@ where
     { Self { menu_state, game_start_state, game_end_state }
     }
 }
+
 impl<T> Plugin for GameStatePlugin<T>
 where 
     T: States + Copy,
@@ -31,17 +30,20 @@ where
             game_end_state: self.game_end_state,
         };
         app.insert_resource(start);
+        
         app.add_systems(OnEnter(self.menu_state), game_menus::setup::<T>);
         app.add_systems(Update, game_menus::run::<T>
             .run_if(in_state(
                 self.menu_state)));
         app.add_systems(OnExit(self.menu_state),
                         cleanup::<game_menus::MenuElement>);
+        
         app.add_systems(OnEnter(self.game_end_state), game_menus::setup::<T>);
         app.add_systems(Update, game_menus::run::<T>
             .run_if(in_state(self.game_end_state)));
         app.add_systems(OnExit(self.game_end_state),
                         cleanup::<game_menus::MenuElement>);
+        
         app.add_systems(OnEnter(T::default()), crate::bevy_assets::setup);
         app.add_systems(Update, crate::bevy_assets::run::<T>
             .run_if(in_state(T::default())));
@@ -56,11 +58,12 @@ pub(crate) struct MenuResource<T> {
     pub(crate) game_end_state: T,
 }
 
-pub fn cleanup<T>(
-    query: Query<Entity, With<T>>,
-    mut commands: Commands,
-) where T: Component { query.for_each(|entity| commands.entity(entity).despawn()) }
-
+pub fn cleanup<T>(query: Query<Entity, With<T>>, mut commands: Commands,
+) where 
+    T: Component 
+{ 
+    query.for_each(|entity| commands.entity(entity).despawn()) 
+}
 
 #[macro_export]
 macro_rules! add_phase {
