@@ -3,6 +3,8 @@ use crate::bevy_assets::asset_store::*;
 #[derive(Clone)]
 pub enum AssetType {
     Image,
+    Sound,
+    SpriteSheet{tile_size: Vec2, sprites_x: usize, sprites_y: usize},
 }
 
 #[derive(Resource, Clone)]
@@ -21,7 +23,21 @@ impl AssetManager {
             ],
         }
     }
-
+    fn asset_exists(filename: &str) -> anyhow::Result<()> {
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let current_directory = std::env::current_dir()?;
+            let assets = current_directory.join("assets");
+            let new_image = assets.join(filename);
+            if !new_image.exists() {
+                return Err(anyhow::Error::msg(format!(
+                    "{} not found in assets directory",
+                    &filename
+                )));
+            }
+        }
+        Ok(())
+    }
     pub fn add_image<S: ToString>(//(3)
                                   mut self,
                                   tag: S,
@@ -46,6 +62,28 @@ impl AssetManager {
             .push((tag.to_string(), filename, AssetType::Image));
         Ok(self)//(11)
     }
+    pub fn add_sprite_sheet<S: ToString>(
+        mut self,
+        tag: S,
+        filename: S,
+        sprite_width: f32,
+        sprite_height: f32,
+        sprites_x: usize,
+        sprites_y: usize,
+    ) -> anyhow::Result<Self> {
+        let filename = filename.to_string();
+        AssetManager::asset_exists(&filename)?;
+        self
+            .asset_list
+            .push((tag.to_string(), filename, AssetType::SpriteSheet{
+                tile_size: Vec2::new(
+                    sprite_width,
+                    sprite_height),
+                sprites_x,
+                sprites_y,
+            }));
+        Ok(self)
+    }
 }
 
 impl Plugin for AssetManager {
@@ -62,10 +100,30 @@ fn setup(
 ) {
     let mut assets = AssetStore {
         asset_index: bevy::utils::HashMap::new(),
+        atlases_to_build: Vec::new(),
+        atlases: bevy::utils::HashMap::new(),
     };
     asset_resource.asset_list.iter().for_each(
         |(tag, filename, asset_type)| {
             match asset_type {
+                AssetType::SpriteSheet { tile_size, sprites_x, sprites_y } => {
+                    // Sprite Sheets require that we load the image first, and defer
+                    // sheet creation to the loading menu - after the image has loaded
+                    let image_handle = asset_server.load_untyped(filename);//(4)
+                    let base_tag = format!("{tag}_base");//(5)
+                    assets
+                        .asset_index
+                        .insert(base_tag.clone(), image_handle);//(6)
+
+                    // Now that its loaded, we store the future atlas in the asset store
+                    assets.atlases_to_build.push(FutureAtlas {//(7)
+                        tag: tag.clone(),
+                        texture_tag: base_tag,
+                        tile_size: *tile_size,
+                        sprites_x: *sprites_x,
+                        sprites_y: *sprites_y,
+                    });
+                }
                 _ => {
                     // Most asset types don't require a separate loader
                     assets
