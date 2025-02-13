@@ -88,8 +88,6 @@ fn setup(
   commands.spawn(Camera2dBundle::default()).insert(FlappyElement);
   spawn_animated_sprite!(assets, commands, "flappy", -490.0, 0.0, 10.0,
     "Straight and Level", Flappy { gravity: 0.0 }, FlappyElement);
-  spawn_image!(assets, commands, "dragon", -490.0, 0.0, 1.0, &loaded_assets,
-    Flappy { gravity: 0.0 }, FlappyElement);
   build_wall(&mut commands, &assets, &loaded_assets, rng.range(-5..5));
 }
 

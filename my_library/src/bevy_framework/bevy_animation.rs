@@ -44,7 +44,7 @@ impl Animations {
     {
         self.0.insert(
             tag.to_string(),
-            animation,
+            animation
         );
         self
     }
