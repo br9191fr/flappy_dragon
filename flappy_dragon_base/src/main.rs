@@ -115,9 +115,9 @@ fn gravity(mut query: Query<(&mut Flappy, &mut Transform)>) {
 }
 
 fn flap(
-  keyboard: Res<Input<KeyCode>>, 
+  keyboard: Res<Input<KeyCode>>,
   mut query: Query<(&mut Flappy, &mut AnimationCycle)>
-) 
+)
 {
   if keyboard.pressed(KeyCode::Space) {
     if let Ok((mut flappy, mut animation)) = query.get_single_mut() {
