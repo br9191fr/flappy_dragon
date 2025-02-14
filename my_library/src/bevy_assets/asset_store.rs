@@ -22,6 +22,9 @@ pub struct AssetStore {
 }
 
 impl AssetStore {
+    /**
+    My description is here
+    */
     pub fn get_handle<T>(&self, index: &str, assets: &LoadedAssets) -> Option<Handle<T>>
     where
         T: Asset,
