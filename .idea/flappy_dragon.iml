@@ -10,6 +10,9 @@
       <sourceFolder url="file://$MODULE_DIR$/eased_motion/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/twod_shape/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/anim2/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/anim3/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bouncy/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/mars_base/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

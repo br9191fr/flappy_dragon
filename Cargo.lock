@@ -272,6 +272,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "anim3"
+version = "0.1.0"
+dependencies = [
+ "bevy 0.15.2",
+]
+
+[[package]]
 name = "anstyle"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
