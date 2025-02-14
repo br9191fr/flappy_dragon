@@ -1,13 +1,29 @@
 use bevy::prelude::*;
 // How frequently should the physics tick fire (ms)
 const PHYSICS_TICK_TIME: u128 = 33;
+
+#[derive(Component)]
+pub struct PhysicsPosition {
+    pub start_frame: Vec2,
+    pub end_frame: Vec2,
+}
+
+impl PhysicsPosition {
+    pub fn new(start: Vec2) -> Self {
+        Self {
+            start_frame: start,
+            end_frame: start,
+        }
+    }
+}
+
 #[derive(Default)]
 pub struct PhysicsTimer(u128);
 #[derive(Event)]
 pub struct PhysicsTick;
 
 #[derive(Component)]
-pub struct Velocity(Vec3);
+pub struct Velocity(pub Vec3);
 impl Default for Velocity {
     fn default() -> Self {
         Self(Vec3::ZERO)
@@ -19,14 +35,14 @@ impl Velocity {
     }
 }
 #[derive(Component)]
-pub struct ApplyGravity;
+pub struct ApplyGravity(pub f32);
 pub fn apply_gravity(
     mut tick: EventReader<PhysicsTick>,
-    mut gravity: Query<&mut Velocity, With<ApplyGravity>>,
+    mut gravity: Query<(&mut Velocity, &ApplyGravity)>,
 ) {
     for _tick in tick.read() {
-        gravity.for_each_mut(|mut velocity| {
-            velocity.0.y -= 0.75;
+        gravity.for_each_mut(|(mut velocity, gravity)| {
+            velocity.0.y -= gravity.0;
         });
     }
 }

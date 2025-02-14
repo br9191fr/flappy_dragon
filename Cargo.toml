@@ -5,7 +5,7 @@ edition = "2021"
 
 
 [workspace]
-members  = [ "anim2", "eased_motion", "flappy_dragon_base", "my_library" , "twod_shape"]
+members  = [ "anim2", "eased_motion", "flappy_dragon_base", "my_library" , "twod_shape", "bouncy", "mars_base"]
 
 [workspace.dependencies]
 bevy = "0.12"
