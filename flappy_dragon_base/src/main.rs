@@ -1,3 +1,7 @@
+/**
+Author BRI
+
+*/
 use bevy::prelude::*;
 use my_library::*;
 
